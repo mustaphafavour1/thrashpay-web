@@ -16,8 +16,22 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="bg-dark-card border-t border-dark-border">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+    <footer
+      className="border-t border-dark-border relative overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(160deg, #181818 0%, #101010 40%, #080808 80%, #060606 100%)",
+      }}
+    >
+      {/* Subtle green tint — far right and bottom corner */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 55% at 100% 100%, rgba(200,241,53,0.045) 0%, transparent 55%)",
+        }}
+      />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

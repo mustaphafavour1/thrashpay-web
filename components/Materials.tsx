@@ -73,8 +73,8 @@ export default function Materials() {
           </h2>
         </motion.div>
 
-        {/* Grid with 4px border radius and divider-line default state */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 mb-12 sm:mb-16">
+        {/* Fixed-height grid — tall enough to contain any expanded card */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 items-start mb-12 sm:mb-16" style={{ minHeight: 340 }}>
           {materials.map((m, i) => (
             <motion.div
               key={m.title}

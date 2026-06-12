@@ -13,8 +13,8 @@ const subStats = [
 ];
 
 const ACCENT = "#C8F135";
-const FILL_DURATION = 1.0;
-const STAGGER = 0.55;
+const FILL_DURATION = 3.2;
+const STAGGER = 1.8;
 
 function OutlineFill({
   value,
@@ -53,7 +53,7 @@ function OutlineFill({
         transition={{
           duration: FILL_DURATION,
           delay: fillDelay,
-          ease: "easeInOut",
+          ease: [0.16, 1, 0.3, 1],
         }}
       >
         {value}

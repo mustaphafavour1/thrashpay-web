@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 
 const benefits = [
-  { icon: "📦", text: "Steady, sorted recyclable supply" },
-  { icon: "💰", text: "Reduced sourcing costs" },
-  { icon: "✅", text: "Pre-vetted quality checks on every batch" },
-  { icon: "🚛", text: "Bulk ordering with real-time delivery tracking" },
-  { icon: "🔄", text: "Recurring supply contracts available" },
-  { icon: "📊", text: "Supplier analytics and reporting dashboard" },
+  "Steady sorted supply",
+  "Lower sourcing costs",
+  "Quality-verified batches",
+  "Bulk delivery tracking",
+  "Recurring contracts",
+  "Supplier analytics",
 ];
 
 const materialCategories = [
@@ -30,7 +30,9 @@ export default function ForCompanies() {
       />
 
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+          {/* Left — text */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -45,27 +47,25 @@ export default function ForCompanies() {
               <br />
               <span className="text-offwhite/40">starts at the curb.</span>
             </h2>
-            <p className="font-body text-offwhite/60 text-lg leading-relaxed mb-10">
-              Stop scrambling for consistent recyclable input. TrashPay&apos;s B2B portal gives
-              manufacturers direct access to a steady, sorted, and verified stream of materials —
-              sourced from thousands of households every week.
+            <p className="font-body text-offwhite/55 text-base sm:text-lg leading-relaxed mb-10 max-w-md">
+              TrashPay gives manufacturers a direct line to sorted, verified
+              recyclables — collected from thousands of households every week.
+              No scrambling. Just supply.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-4 mb-10">
+            {/* Benefit chips */}
+            <div className="flex flex-wrap gap-2 mb-10">
               {benefits.map((b, i) => (
-                <motion.div
-                  key={b.text}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                <motion.span
+                  key={b}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="flex items-start gap-3"
+                  transition={{ duration: 0.3, delay: i * 0.06 }}
+                  className="px-3 py-1.5 rounded-full border border-dark-border/70 bg-dark/50 font-body text-xs text-offwhite/55 hover:text-offwhite/80 hover:border-brown/40 transition-colors cursor-default"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-brown/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-sm">{b.icon}</span>
-                  </div>
-                  <span className="font-body text-sm text-offwhite/70 leading-snug">{b.text}</span>
-                </motion.div>
+                  {b}
+                </motion.span>
               ))}
             </div>
 
@@ -73,14 +73,15 @@ export default function ForCompanies() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
               href="#"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-brown text-offwhite font-display font-bold text-base hover:bg-brown/90 transition-colors shadow-[0_0_30px_rgba(182,96,50,0.25)]"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-brown text-offwhite font-display font-bold text-sm hover:bg-brown/90 transition-colors shadow-[0_0_30px_rgba(182,96,50,0.2)]"
             >
               Apply as a Partner Company →
             </motion.a>
           </motion.div>
 
+          {/* Right — mockup */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -88,46 +89,51 @@ export default function ForCompanies() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative p-1 rounded-3xl bg-gradient-to-b from-dark-border to-transparent">
+            <div className="relative p-px rounded-3xl bg-gradient-to-b from-dark-border to-transparent">
               <div className="rounded-[22px] bg-dark overflow-hidden border border-dark-border">
-                <div className="bg-dark-card border-b border-dark-border px-6 py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/60" />
+                <div className="bg-dark-card border-b border-dark-border px-5 py-3.5 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
                   </div>
                   <span className="font-body text-xs text-offwhite/30">TrashPay B2B Portal</span>
-                  <div className="w-16" />
+                  <div className="w-14" />
                 </div>
 
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div>
-                      <p className="font-body text-xs text-offwhite/40 mb-1">Company Account</p>
-                      <p className="font-display font-bold text-offwhite">Zenith Plastics Ltd.</p>
+                      <p className="font-body text-xs text-offwhite/40 mb-0.5">Company Account</p>
+                      <p className="font-display font-bold text-offwhite text-sm sm:text-base">
+                        Zenith Plastics Ltd.
+                      </p>
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-lime/10 border border-lime/30">
+                    <div className="px-2.5 py-1 rounded-full bg-lime/10 border border-lime/30">
                       <span className="font-body text-xs text-lime font-medium">Verified Partner</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div className="grid grid-cols-3 gap-2.5 mb-5">
                     {[
                       { label: "Orders", value: "24" },
                       { label: "Total kg", value: "8.4T" },
                       { label: "Saved", value: "₦240k" },
                     ].map((s) => (
-                      <div key={s.label} className="p-3 rounded-xl bg-dark-card border border-dark-border text-center">
-                        <div className="font-display font-black text-xl text-lime">{s.value}</div>
-                        <div className="font-body text-xs text-offwhite/40 mt-0.5">{s.label}</div>
+                      <div
+                        key={s.label}
+                        className="p-2.5 rounded-xl bg-dark-card border border-dark-border text-center"
+                      >
+                        <div className="font-display font-black text-lg sm:text-xl text-lime">{s.value}</div>
+                        <div className="font-body text-[10px] text-offwhite/40 mt-0.5">{s.label}</div>
                       </div>
                     ))}
                   </div>
 
-                  <p className="font-body text-xs text-offwhite/40 mb-3 font-medium uppercase tracking-wider">
+                  <p className="font-body text-[10px] text-offwhite/40 mb-2.5 font-medium uppercase tracking-wider">
                     Available Materials
                   </p>
-                  <div className="space-y-2.5">
+                  <div className="space-y-2">
                     {materialCategories.map((m, i) => (
                       <motion.div
                         key={m.name}
@@ -135,14 +141,14 @@ export default function ForCompanies() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.4 + i * 0.08 }}
-                        className="flex items-center justify-between p-3 rounded-xl bg-dark-card border border-dark-border"
+                        className="flex items-center justify-between p-2.5 rounded-xl bg-dark-card border border-dark-border"
                       >
                         <div>
-                          <p className="font-body text-sm font-medium text-offwhite">{m.name}</p>
-                          <p className="font-body text-xs text-offwhite/40">{m.volume}</p>
+                          <p className="font-body text-xs sm:text-sm font-medium text-offwhite">{m.name}</p>
+                          <p className="font-body text-[10px] text-offwhite/40">{m.volume}</p>
                         </div>
                         <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-body font-medium ${
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-body font-medium ${
                             m.tag === "High demand"
                               ? "bg-brown/15 text-brown"
                               : m.tag === "Available now"
@@ -156,7 +162,7 @@ export default function ForCompanies() {
                     ))}
                   </div>
 
-                  <button className="mt-4 w-full py-3 rounded-xl bg-brown text-offwhite font-body font-semibold text-sm hover:bg-brown/90 transition-colors">
+                  <button className="mt-4 w-full py-2.5 rounded-xl bg-brown text-offwhite font-body font-semibold text-xs sm:text-sm hover:bg-brown/90 transition-colors">
                     Place Bulk Order
                   </button>
                 </div>

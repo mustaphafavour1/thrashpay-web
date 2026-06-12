@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import Image from "next/image";
+import { AppleLogo, GooglePlayLogo } from "@phosphor-icons/react";
 
 function MiniParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -112,45 +112,22 @@ export default function CTABanner() {
               */}
               <a
                 href="#"
-                className="group relative h-14 w-44 rounded-xl overflow-hidden border border-offwhite/20 hover:border-offwhite/40 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm flex items-center justify-center"
+                className="flex items-center gap-3 px-5 py-3.5 rounded-xl border border-offwhite/20 hover:border-offwhite/40 hover:bg-dark/80 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm"
               >
-                {/* Shows the badge image if uploaded, otherwise fallback */}
-                <div className="absolute inset-0">
-                  <Image
-                    src="/app-store-badge.png"
-                    alt="Download on the App Store"
-                    fill
-                    className="object-contain p-2"
-                    unoptimized
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                </div>
-                <div className="relative z-10 text-left px-4">
-                  <div className="font-body text-[10px] text-offwhite/50">Download on the</div>
+                <AppleLogo size={28} weight="fill" className="text-offwhite flex-shrink-0" />
+                <div className="text-left">
+                  <div className="font-body text-[10px] text-offwhite/50 leading-none mb-0.5">Download on the</div>
                   <div className="font-display font-bold text-offwhite text-base leading-tight">App Store</div>
                 </div>
               </a>
 
               <a
                 href="#"
-                className="group relative h-14 w-44 rounded-xl overflow-hidden border border-offwhite/20 hover:border-offwhite/40 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm flex items-center justify-center"
+                className="flex items-center gap-3 px-5 py-3.5 rounded-xl border border-offwhite/20 hover:border-offwhite/40 hover:bg-dark/80 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm"
               >
-                <div className="absolute inset-0">
-                  <Image
-                    src="/google-play-badge.png"
-                    alt="Get it on Google Play"
-                    fill
-                    className="object-contain p-2"
-                    unoptimized
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                </div>
-                <div className="relative z-10 text-left px-4">
-                  <div className="font-body text-[10px] text-offwhite/50">Get it on</div>
+                <GooglePlayLogo size={28} weight="fill" className="text-offwhite flex-shrink-0" />
+                <div className="text-left">
+                  <div className="font-body text-[10px] text-offwhite/50 leading-none mb-0.5">Get it on</div>
                   <div className="font-display font-bold text-offwhite text-base leading-tight">Google Play</div>
                 </div>
               </a>
