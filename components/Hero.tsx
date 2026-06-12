@@ -46,16 +46,6 @@ export default function Hero() {
       <ParticleCanvas />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-28 sm:pt-32 pb-16 sm:pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-lime/30 bg-lime/5 text-lime text-xs sm:text-sm font-body font-medium mb-8 sm:mb-10"
-        >
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-lime animate-pulse" />
-          Now live in 4 cities across Nigeria
-        </motion.div>
-
         <div
           className="font-display font-black leading-[0.9] tracking-tighter mb-6 sm:mb-8"
           style={{ fontSize: "clamp(38px, 8vw, 80px)" }}
