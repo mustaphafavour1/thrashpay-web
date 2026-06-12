@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brown: #B66032;
+  --color-electric: #04CEFF;
+  --color-offwhite: #F4F1EA;
+  --color-lime: #C8F135;
+  --color-dark: #0D0D0D;
+  --color-dark-card: #141414;
+  --color-dark-border: #222222;
+  --color-muted: #5A5A5A;
+
+  --font-display: var(--font-syne);
+  --font-body: var(--font-teachers);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0D0D0D;
+  color: #F4F1EA;
+  font-family: var(--font-teachers), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), system-ui, sans-serif;
+  font-weight: 700;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: #0D0D0D;
+}
+::-webkit-scrollbar-thumb {
+  background: #B66032;
+  border-radius: 2px;
+}
+
+.font-display {
+  font-family: var(--font-syne), system-ui, sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-teachers), system-ui, sans-serif;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-pause {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee-pause:hover {
+  animation-play-state: paused;
+}
