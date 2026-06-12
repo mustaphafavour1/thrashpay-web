@@ -20,7 +20,7 @@ const materialCategories = [
 
 export default function ForCompanies() {
   return (
-    <section id="companies" className="py-28 px-6 bg-dark-card relative overflow-hidden">
+    <section id="companies" className="py-16 sm:py-28 px-4 sm:px-6 bg-dark-card relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -37,10 +37,10 @@ export default function ForCompanies() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-block font-body text-sm text-brown font-medium tracking-widest uppercase mb-5">
+            <span className="inline-block font-body text-xs sm:text-sm text-brown font-medium tracking-widest uppercase mb-5">
               For Companies
             </span>
-            <h2 className="font-display font-black text-5xl md:text-6xl text-offwhite leading-tight mb-6">
+            <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl text-offwhite leading-tight mb-6">
               Your supply chain
               <br />
               <span className="text-offwhite/40">starts at the curb.</span>

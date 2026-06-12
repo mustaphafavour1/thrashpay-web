@@ -33,21 +33,25 @@ const problems = [
   },
 ];
 
-function CountUp({ target, suffix = "" }: { target: string; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+// index → initial transform to create the "stacked" look
+const stackedInitial = [
+  { x: "105%", y: 0 },   // left card: starts shifted right (toward center)
+  { x: 0, y: 50 },       // center card: starts a bit lower than the sides
+  { x: "-105%", y: 0 },  // right card: starts shifted left (toward center)
+];
+
+function CountUp({ target, active }: { target: string; active: boolean }) {
   const [display, setDisplay] = useState("0");
 
   useEffect(() => {
-    if (!inView) return;
+    if (!active) return;
     const num = parseFloat(target.replace(/[^0-9.]/g, ""));
     const prefix = target.match(/^[^0-9]*/)?.[0] || "";
-    const postfix = target.match(/[^0-9.]+$/)?.[0] || suffix;
+    const postfix = target.match(/[^0-9.]+$/)?.[0] || "";
     let start = 0;
     const duration = 1600;
     const step = 16;
-    const steps = duration / step;
-    const increment = num / steps;
+    const increment = num / (duration / step);
     const timer = setInterval(() => {
       start += increment;
       if (start >= num) {
@@ -58,14 +62,17 @@ function CountUp({ target, suffix = "" }: { target: string; suffix?: string }) {
       }
     }, step);
     return () => clearInterval(timer);
-  }, [inView, target, suffix]);
+  }, [active, target]);
 
-  return <span ref={ref}>{display}</span>;
+  return <span>{display}</span>;
 }
 
 export default function Problem() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(containerRef, { once: true, margin: "-80px" });
+
   return (
-    <section className="py-28 px-6 bg-dark relative overflow-hidden">
+    <section className="py-16 sm:py-28 px-4 sm:px-6 bg-dark relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -80,61 +87,78 @@ export default function Problem() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="text-center mb-20"
+          className="text-center mb-14 sm:mb-20"
         >
-          <span className="inline-block font-body text-sm text-brown font-medium tracking-widest uppercase mb-4">
+          <span className="inline-block font-body text-xs sm:text-sm text-brown font-medium tracking-widest uppercase mb-4">
             The Problem
           </span>
-          <h2 className="font-display font-black text-5xl md:text-6xl lg:text-7xl text-offwhite leading-tight">
+          <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-offwhite leading-tight">
             Waste is everywhere.
             <br />
             <span className="text-offwhite/40">Value is trapped in it.</span>
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {problems.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-              className="group relative p-8 rounded-3xl bg-dark-card border border-dark-border hover:border-opacity-60 transition-all duration-300"
-              style={{ "--accent": p.accent } as React.CSSProperties}
-            >
-              <div
-                className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{
-                  background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${p.accent}10 0%, transparent 70%)`,
+        {/* overflow-hidden prevents offset cards from causing horizontal scroll */}
+        <div className="overflow-hidden">
+          <div ref={containerRef} className="grid md:grid-cols-3 gap-5 sm:gap-6">
+            {problems.map((p, i) => (
+              <motion.div
+                key={p.title}
+                initial={{
+                  x: stackedInitial[i].x,
+                  y: stackedInitial[i].y,
+                  opacity: 0,
+                  scale: 0.96,
                 }}
-              />
+                animate={
+                  inView
+                    ? { x: 0, y: 0, opacity: 1, scale: 1 }
+                    : {}
+                }
+                transition={{
+                  duration: 0.7,
+                  delay: i * 0.08,
+                  type: "spring",
+                  stiffness: 90,
+                  damping: 18,
+                }}
+                className="group relative p-6 sm:p-8 rounded-3xl bg-dark-card border border-dark-border hover:border-opacity-60 transition-colors duration-300"
+                style={{ "--accent": p.accent } as React.CSSProperties}
+              >
+                <div
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${p.accent}10 0%, transparent 70%)`,
+                  }}
+                />
 
-              <div className="text-4xl mb-6">{p.icon}</div>
+                <div className="text-3xl sm:text-4xl mb-5 sm:mb-6">{p.icon}</div>
 
-              <div className="mb-2">
-                <span
-                  className="font-display font-black text-5xl"
-                  style={{ color: p.accent }}
-                >
-                  <CountUp target={p.number} />
-                </span>
-              </div>
-              <p className="font-body text-sm text-offwhite/40 mb-4">{p.stat}</p>
+                <div className="mb-1.5">
+                  <span
+                    className="font-display font-black text-4xl sm:text-5xl"
+                    style={{ color: p.accent }}
+                  >
+                    <CountUp target={p.number} active={inView} />
+                  </span>
+                </div>
+                <p className="font-body text-xs sm:text-sm text-offwhite/40 mb-3 sm:mb-4">{p.stat}</p>
 
-              <h3 className="font-display font-bold text-xl text-offwhite mb-3 leading-snug">
-                {p.title}
-              </h3>
-              <p className="font-body text-offwhite/50 text-sm leading-relaxed">
-                {p.description}
-              </p>
+                <h3 className="font-display font-bold text-lg sm:text-xl text-offwhite mb-2 sm:mb-3 leading-snug">
+                  {p.title}
+                </h3>
+                <p className="font-body text-offwhite/50 text-xs sm:text-sm leading-relaxed">
+                  {p.description}
+                </p>
 
-              <div
-                className="absolute bottom-0 left-8 right-8 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: `linear-gradient(90deg, transparent, ${p.accent}40, transparent)` }}
-              />
-            </motion.div>
-          ))}
+                <div
+                  className="absolute bottom-0 left-6 right-6 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `linear-gradient(90deg, transparent, ${p.accent}40, transparent)` }}
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

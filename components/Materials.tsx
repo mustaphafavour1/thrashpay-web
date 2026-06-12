@@ -43,10 +43,10 @@ const materials = [
 ];
 
 export default function Materials() {
-  const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <section className="py-28 px-6 bg-dark relative overflow-hidden">
+    <section className="py-16 sm:py-28 px-4 sm:px-6 bg-dark relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -61,55 +61,107 @@ export default function Materials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <span className="inline-block font-body text-sm text-brown font-medium tracking-widest uppercase mb-4">
+          <span className="inline-block font-body text-xs sm:text-sm text-brown font-medium tracking-widest uppercase mb-4">
             Materials
           </span>
-          <h2 className="font-display font-black text-5xl md:text-6xl lg:text-7xl text-offwhite">
+          <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-offwhite">
             We collect what
             <br />
             <span className="text-offwhite/40">manufacturers need.</span>
           </h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+        {/* Grid with 4px border radius and divider-line default state */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 mb-12 sm:mb-16">
           {materials.map((m, i) => (
             <motion.div
               key={m.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              onHoverStart={() => setActiveTooltip(i)}
-              onHoverEnd={() => setActiveTooltip(null)}
-              className="relative group p-6 rounded-3xl bg-dark-card border border-dark-border hover:border-opacity-60 transition-all duration-300 cursor-default overflow-hidden"
+              onHoverStart={() => setHovered(i)}
+              onHoverEnd={() => setHovered(null)}
+              className="group relative cursor-default transition-all duration-300"
+              style={{ borderRadius: "4px" }}
             >
+              {/* Divider line — always present */}
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
+                className="absolute bottom-0 left-0 right-0 h-px"
+                style={{ background: "rgba(255,255,255,0.07)" }}
+              />
+              {/* Right divider for columns (not last col) */}
+              {i % 4 !== 3 && (
+                <div
+                  className="hidden lg:block absolute top-0 right-0 bottom-0 w-px"
+                  style={{ background: "rgba(255,255,255,0.07)" }}
+                />
+              )}
+              {i % 2 !== 1 && (
+                <div
+                  className="lg:hidden absolute top-0 right-0 bottom-0 w-px sm:block hidden"
+                  style={{ background: "rgba(255,255,255,0.07)" }}
+                />
+              )}
+
+              {/* Card hover background */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none"
                 style={{
-                  background: `radial-gradient(ellipse 100% 80% at 50% 0%, ${m.color}08 0%, transparent 70%)`,
+                  borderRadius: "4px",
+                  background: "#141414",
+                  border: `1px solid rgba(255,255,255,0.1)`,
+                  boxShadow: `0 0 40px ${m.color}08`,
                 }}
               />
 
-              <div className="text-4xl mb-5">{m.icon}</div>
-              <h3 className="font-display font-black text-xl text-offwhite mb-1">{m.title}</h3>
-              <p className="font-body text-xs text-offwhite/40 mb-3">{m.sub}</p>
-              <p className="font-body text-sm text-offwhite/60 leading-relaxed mb-4">
-                {m.description}
-              </p>
+              <div className="relative p-5 sm:p-7">
+                <motion.div
+                  animate={{ scale: hovered === i ? 1.05 : 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-3xl sm:text-4xl mb-4"
+                >
+                  {m.icon}
+                </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: activeTooltip === i ? 1 : 0, y: activeTooltip === i ? 0 : 6 }}
-                transition={{ duration: 0.25 }}
-                className="pt-3 border-t border-dark-border"
-              >
-                <p className="font-body text-xs text-offwhite/40 mb-0.5">Typical buyers</p>
-                <p className="font-body text-xs font-medium" style={{ color: m.color }}>
-                  {m.buyers}
-                </p>
-              </motion.div>
+                <h3 className="font-display font-black text-lg sm:text-xl text-offwhite mb-0.5">
+                  {m.title}
+                </h3>
+                <p className="font-body text-xs text-offwhite/40 mb-3">{m.sub}</p>
+
+                {/* Description — revealed on hover */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: hovered === i ? 1 : 0,
+                    height: hovered === i ? "auto" : 0,
+                  }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <p className="font-body text-xs sm:text-sm text-offwhite/60 leading-relaxed mb-3">
+                    {m.description}
+                  </p>
+                  <div className="pt-2 border-t border-white/10">
+                    <p className="font-body text-[10px] text-offwhite/40 mb-0.5 uppercase tracking-wider">
+                      Typical buyers
+                    </p>
+                    <p className="font-body text-xs font-medium" style={{ color: m.color }}>
+                      {m.buyers}
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Accent bottom line on hover */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${m.color}50, transparent)`,
+                  }}
+                />
+              </div>
             </motion.div>
           ))}
         </div>
@@ -123,7 +175,7 @@ export default function Materials() {
         >
           <a
             href="#companies"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-dark-border hover:border-brown/50 bg-dark-card hover:bg-brown/5 transition-all duration-200 font-body font-medium text-offwhite/70 hover:text-offwhite group"
+            className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-full border border-dark-border hover:border-brown/50 bg-dark-card hover:bg-brown/5 transition-all duration-200 font-body font-medium text-sm text-offwhite/70 hover:text-offwhite group"
           >
             Partner with us as a company
             <span className="group-hover:translate-x-1 transition-transform">→</span>

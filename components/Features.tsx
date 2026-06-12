@@ -79,7 +79,7 @@ export default function Features() {
   const small = features.filter((f) => f.size === "small");
 
   return (
-    <section id="features" className="py-28 px-6 bg-dark relative overflow-hidden">
+    <section id="features" className="py-16 sm:py-28 px-4 sm:px-6 bg-dark relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -99,7 +99,7 @@ export default function Features() {
           <span className="inline-block font-body text-sm text-electric font-medium tracking-widest uppercase mb-4">
             Features
           </span>
-          <h2 className="font-display font-black text-5xl md:text-6xl lg:text-7xl text-offwhite">
+          <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-offwhite">
             Built for every side
             <br />
             <span className="text-offwhite/40">of the equation.</span>

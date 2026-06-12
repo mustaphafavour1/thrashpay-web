@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 function MiniParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,16 +13,19 @@ function MiniParticles() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
 
-    const particles = Array.from({ length: 30 }, () => ({
+    const particles = Array.from({ length: 40 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.5,
       r: Math.random() * 2 + 1,
-      opacity: Math.random() * 0.4 + 0.1,
+      opacity: Math.random() * 0.35 + 0.08,
     }));
 
     let raf = 0;
@@ -42,7 +46,10 @@ function MiniParticles() {
       raf = requestAnimationFrame(draw);
     };
     draw();
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
 
   return (
@@ -52,13 +59,13 @@ function MiniParticles() {
 
 export default function CTABanner() {
   return (
-    <section className="py-10 px-6 bg-dark relative overflow-hidden">
+    <section className="py-8 sm:py-10 px-4 sm:px-6 bg-dark relative overflow-hidden">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.7 }}
-        className="relative max-w-7xl mx-auto rounded-3xl overflow-hidden"
+        className="relative max-w-7xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden"
       >
         <div
           className="absolute inset-0"
@@ -69,61 +76,87 @@ export default function CTABanner() {
         />
         <motion.div
           className="absolute inset-0"
-          animate={{
-            backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
-          }}
+          animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
           transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
           style={{
             backgroundImage:
-              "radial-gradient(ellipse 60% 60% at var(--x, 30%) var(--y, 40%), rgba(200,241,53,0.15) 0%, transparent 60%)",
+              "radial-gradient(ellipse 60% 60% at 30% 40%, rgba(200,241,53,0.15) 0%, transparent 60%)",
           }}
         />
 
         <MiniParticles />
 
-        <div className="relative z-10 py-20 px-8 md:px-16 text-center">
+        <div className="relative z-10 py-14 sm:py-20 px-6 sm:px-10 md:px-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <span className="inline-block font-body text-sm text-lime/70 font-medium tracking-widest uppercase mb-6">
+            <span className="inline-block font-body text-xs sm:text-sm text-lime/70 font-medium tracking-widest uppercase mb-5 sm:mb-6">
               Get Started Today
             </span>
-            <h2 className="font-display font-black text-5xl md:text-7xl text-offwhite leading-tight mb-6">
+            <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-offwhite leading-tight mb-4 sm:mb-6">
               Your clean environment
               <br />
               <span className="text-lime">is one tap away.</span>
             </h2>
-            <p className="font-body text-lg text-offwhite/60 mb-12 max-w-lg mx-auto">
+            <p className="font-body text-base sm:text-lg text-offwhite/60 mb-10 sm:mb-12 max-w-lg mx-auto">
               Available on Android and iOS. Free to download. Start your first pickup in minutes.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-5 sm:mb-6">
+              {/*
+                App Store badge: upload a file named "app-store-badge.png" to /public/
+                Google Play badge: upload a file named "google-play-badge.png" to /public/
+              */}
               <a
                 href="#"
-                className="group flex items-center gap-4 px-7 py-4 rounded-2xl bg-dark/60 border border-offwhite/20 hover:border-offwhite/40 hover:bg-dark/80 transition-all backdrop-blur-sm"
+                className="group relative h-14 w-44 rounded-xl overflow-hidden border border-offwhite/20 hover:border-offwhite/40 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm flex items-center justify-center"
               >
-                <div className="text-2xl">🍎</div>
-                <div className="text-left">
-                  <div className="font-body text-xs text-offwhite/50">Download on the</div>
-                  <div className="font-display font-bold text-offwhite text-lg leading-tight">App Store</div>
+                {/* Shows the badge image if uploaded, otherwise fallback */}
+                <div className="absolute inset-0">
+                  <Image
+                    src="/app-store-badge.png"
+                    alt="Download on the App Store"
+                    fill
+                    className="object-contain p-2"
+                    unoptimized
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+                <div className="relative z-10 text-left px-4">
+                  <div className="font-body text-[10px] text-offwhite/50">Download on the</div>
+                  <div className="font-display font-bold text-offwhite text-base leading-tight">App Store</div>
                 </div>
               </a>
+
               <a
                 href="#"
-                className="group flex items-center gap-4 px-7 py-4 rounded-2xl bg-dark/60 border border-offwhite/20 hover:border-offwhite/40 hover:bg-dark/80 transition-all backdrop-blur-sm"
+                className="group relative h-14 w-44 rounded-xl overflow-hidden border border-offwhite/20 hover:border-offwhite/40 transition-all hover:scale-105 bg-dark/60 backdrop-blur-sm flex items-center justify-center"
               >
-                <div className="text-2xl">▶️</div>
-                <div className="text-left">
-                  <div className="font-body text-xs text-offwhite/50">Get it on</div>
-                  <div className="font-display font-bold text-offwhite text-lg leading-tight">Google Play</div>
+                <div className="absolute inset-0">
+                  <Image
+                    src="/google-play-badge.png"
+                    alt="Get it on Google Play"
+                    fill
+                    className="object-contain p-2"
+                    unoptimized
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+                <div className="relative z-10 text-left px-4">
+                  <div className="font-body text-[10px] text-offwhite/50">Get it on</div>
+                  <div className="font-display font-bold text-offwhite text-base leading-tight">Google Play</div>
                 </div>
               </a>
             </div>
 
-            <p className="font-body text-sm text-offwhite/30">
+            <p className="font-body text-xs sm:text-sm text-offwhite/30">
               Join 500+ households already subscribed
             </p>
           </motion.div>

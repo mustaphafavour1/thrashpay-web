@@ -68,7 +68,7 @@ export default function HowItWorks() {
   const content = tabContent[active];
 
   return (
-    <section id="how-it-works" className="py-28 px-6 bg-dark-card relative overflow-hidden">
+    <section id="how-it-works" className="py-16 sm:py-28 px-4 sm:px-6 bg-dark-card relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -85,10 +85,10 @@ export default function HowItWorks() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-block font-body text-sm text-lime font-medium tracking-widest uppercase mb-4">
+          <span className="inline-block font-body text-xs sm:text-sm text-lime font-medium tracking-widest uppercase mb-4">
             How It Works
           </span>
-          <h2 className="font-display font-black text-5xl md:text-6xl lg:text-7xl text-offwhite">
+          <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-offwhite">
             One platform.
             <br />
             <span className="text-offwhite/40">Three sides. Zero waste.</span>
@@ -132,7 +132,7 @@ export default function HowItWorks() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="grid md:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-10">
               {content.steps.map((step, i) => (
                 <motion.div
                   key={step.title}
