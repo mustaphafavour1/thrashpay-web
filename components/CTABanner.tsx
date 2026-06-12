@@ -4,13 +4,18 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { AppleLogo, GooglePlayLogo } from "@phosphor-icons/react";
 
+// Pre-built color strings avoid template-literal allocation in the draw loop
+const LIME_COLORS = Array.from({ length: 8 }, (_, i) =>
+  `rgba(200,241,53,${(0.08 + i * 0.035).toFixed(3)})`
+);
+
 function MiniParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     const resize = () => {
@@ -19,19 +24,35 @@ function MiniParticles() {
     };
     resize();
 
-    const particles = Array.from({ length: 40 }, () => ({
+    const particles = Array.from({ length: 22 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      r: Math.random() * 2 + 1,
-      opacity: Math.random() * 0.35 + 0.08,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      r: Math.random() * 1.8 + 0.8,
+      colorIdx: Math.floor(Math.random() * LIME_COLORS.length),
     }));
 
     let raf = 0;
-    const draw = () => {
+    let lastTime = 0;
+    const FRAME_MS = 1000 / 30;
+    let visible = true;
+
+    const observer = new IntersectionObserver(
+      ([e]) => { visible = e.isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    const draw = (ts: number) => {
+      raf = requestAnimationFrame(draw);
+      if (!visible) return;
+      const elapsed = ts - lastTime;
+      if (elapsed < FRAME_MS) return;
+      lastTime = ts - (elapsed % FRAME_MS);
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
+      for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0) p.x = canvas.width;
@@ -40,15 +61,14 @@ function MiniParticles() {
         if (p.y > canvas.height) p.y = 0;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 241, 53, ${p.opacity})`;
+        ctx.fillStyle = LIME_COLORS[p.colorIdx];
         ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
+      }
     };
-    draw();
+    raf = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
@@ -74,13 +94,12 @@ export default function CTABanner() {
               "linear-gradient(135deg, #0D1F0A 0%, #0D2710 25%, #061A0D 50%, #0A1D12 75%, #0D1F0A 100%)",
           }}
         />
-        <motion.div
+        {/* Static ambient glow — no ongoing JS animation */}
+        <div
           className="absolute inset-0"
-          animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
           style={{
             backgroundImage:
-              "radial-gradient(ellipse 60% 60% at 30% 40%, rgba(200,241,53,0.15) 0%, transparent 60%)",
+              "radial-gradient(ellipse 60% 60% at 30% 40%, rgba(200,241,53,0.12) 0%, transparent 60%)",
           }}
         />
 

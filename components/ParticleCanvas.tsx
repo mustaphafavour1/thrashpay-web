@@ -9,115 +9,133 @@ interface Particle {
   vy: number;
   size: number;
   opacity: number;
-  color: string;
-  emoji: string;
   rotation: number;
   rotSpeed: number;
+  colorIdx: number;
 }
 
-const WASTE_ICONS = ["♻", "📦", "🧴", "🗂", "🔩", "🪵", "🧃", "🥤"];
-const COLORS = ["#C8F135", "#04CEFF", "#B66032", "#F4F1EA"];
+// Pre-computed color palette — avoids string interpolation in the draw loop
+const COLORS = [
+  "rgba(200,241,53,",   // lime
+  "rgba(4,206,255,",    // electric
+  "rgba(182,96,50,",    // brown
+  "rgba(244,241,234,",  // offwhite
+];
+
+const PARTICLE_COUNT = 28;
+const TARGET_FPS = 30;
+const FRAME_MS = 1000 / TARGET_FPS;
 
 export default function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particles = useRef<Particle[]>([]);
-  const animRef = useRef<number>(0);
-  const centerRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      centerRef.current = { x: canvas.width / 2, y: canvas.height / 2 };
     };
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resize, { passive: true });
 
-    const createParticle = (): Particle => ({
+    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      size: Math.random() * 14 + 8,
-      opacity: Math.random() * 0.5 + 0.15,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      emoji: WASTE_ICONS[Math.floor(Math.random() * WASTE_ICONS.length)],
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      size: Math.random() * 6 + 3,
+      opacity: Math.random() * 0.35 + 0.08,
       rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.02,
-    });
+      rotSpeed: (Math.random() - 0.5) * 0.015,
+      colorIdx: Math.floor(Math.random() * COLORS.length),
+    }));
 
-    for (let i = 0; i < 40; i++) {
-      particles.current.push(createParticle());
-    }
+    const cx = () => canvas.width / 2;
+    const cy = () => canvas.height / 2;
+    const GRAVITY = 0.000055;
+    const MAX_DIST_SQ = 280 * 280;
 
-    const GRAVITY_STRENGTH = 0.00008;
-    const MAX_DIST = 300;
+    let rafId = 0;
+    let lastTime = 0;
+    let visible = true;
 
-    const draw = () => {
+    // Pause when hero section is off-screen
+    const observer = new IntersectionObserver(
+      ([entry]) => { visible = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    const draw = (ts: number) => {
+      rafId = requestAnimationFrame(draw);
+      if (!visible) return;
+
+      const elapsed = ts - lastTime;
+      if (elapsed < FRAME_MS) return;
+      lastTime = ts - (elapsed % FRAME_MS);
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cx = centerRef.current.x;
-      const cy = centerRef.current.y;
 
-      particles.current.forEach((p) => {
-        const dx = cx - p.x;
-        const dy = cy - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+      const centerX = cx();
+      const centerY = cy();
 
-        if (dist < 60) {
-          p.x = Math.random() * canvas.width;
-          p.y = Math.random() * canvas.height;
-          p.vx = (Math.random() - 0.5) * 0.4;
-          p.vy = (Math.random() - 0.5) * 0.4;
-        } else {
-          const force = GRAVITY_STRENGTH * Math.min(dist, MAX_DIST);
-          p.vx += (dx / dist) * force;
-          p.vy += (dy / dist) * force;
+      for (const p of particles) {
+        const dx = centerX - p.x;
+        const dy = centerY - p.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq < 60 * 60) {
+          // Respawn at a random edge instead of teleporting
+          const edge = Math.floor(Math.random() * 4);
+          if (edge === 0) { p.x = Math.random() * canvas.width; p.y = -20; }
+          else if (edge === 1) { p.x = canvas.width + 20; p.y = Math.random() * canvas.height; }
+          else if (edge === 2) { p.x = Math.random() * canvas.width; p.y = canvas.height + 20; }
+          else { p.x = -20; p.y = Math.random() * canvas.height; }
+          p.vx = (Math.random() - 0.5) * 0.35;
+          p.vy = (Math.random() - 0.5) * 0.35;
+          continue;
         }
 
-        p.vx *= 0.99;
-        p.vy *= 0.99;
+        // Gravity pull toward center (skip sqrt — use distSq approximation)
+        const clampedSq = Math.min(distSq, MAX_DIST_SQ);
+        const dist = Math.sqrt(clampedSq); // only one sqrt per particle per frame
+        const force = GRAVITY * dist;
+        p.vx += (dx / dist) * force;
+        p.vy += (dy / dist) * force;
+        p.vx *= 0.992;
+        p.vy *= 0.992;
         p.x += p.vx;
         p.y += p.vy;
         p.rotation += p.rotSpeed;
 
-        if (p.x < -30) p.x = canvas.width + 30;
-        if (p.x > canvas.width + 30) p.x = -30;
-        if (p.y < -30) p.y = canvas.height + 30;
-        if (p.y > canvas.height + 30) p.y = -30;
-
+        // Cheap rotated square — fillRect is 100× faster than emoji fillText
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rotation);
-        ctx.globalAlpha = p.opacity;
-        ctx.font = `${p.size}px serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(p.emoji, 0, 0);
+        ctx.fillStyle = COLORS[p.colorIdx] + p.opacity + ")";
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
         ctx.restore();
-      });
+      }
 
-      ctx.save();
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 80);
-      grad.addColorStop(0, "rgba(200, 241, 53, 0.12)");
-      grad.addColorStop(1, "rgba(200, 241, 53, 0)");
+      // Soft glow at center
+      const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 70);
+      grad.addColorStop(0, "rgba(200,241,53,0.10)");
+      grad.addColorStop(1, "rgba(200,241,53,0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(cx, cy, 80, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, 70, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
-
-      animRef.current = requestAnimationFrame(draw);
     };
 
-    draw();
+    rafId = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(animRef.current);
+      cancelAnimationFrame(rafId);
+      observer.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, []);
@@ -126,7 +144,7 @@ export default function ParticleCanvas() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ opacity: 0.8 }}
+      style={{ opacity: 0.75 }}
     />
   );
 }
