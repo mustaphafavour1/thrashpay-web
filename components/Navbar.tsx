@@ -43,12 +43,6 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="#companies"
-            className="px-4 py-2 text-sm font-body font-medium text-offwhite border border-dark-border rounded-full hover:border-offwhite/40 transition-colors"
-          >
-            For Companies
-          </a>
-          <a
             href="#pricing"
             className="px-4 py-2 text-sm font-body font-medium text-dark bg-lime rounded-full hover:bg-lime/90 transition-colors"
           >
