@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,13 +26,15 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-lime flex items-center justify-center">
-            <span className="text-dark font-display font-black text-sm">T</span>
-          </div>
-          <span className="font-display font-bold text-xl text-offwhite tracking-tight">
-            Trash<span className="text-lime">Pay</span>
-          </span>
+        <a href="#" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="TrashPay"
+            width={120}
+            height={40}
+            className="h-9 w-auto object-contain"
+            priority
+          />
         </a>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-body text-offwhite/70">

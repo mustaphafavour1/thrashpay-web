@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const links = {
   Company: ["About", "For Companies", "Become a Packer", "Contact"],
@@ -40,13 +41,14 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
             className="col-span-2 lg:col-span-2"
           >
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-full bg-lime flex items-center justify-center">
-                <span className="text-dark font-display font-black text-base">T</span>
-              </div>
-              <span className="font-display font-bold text-2xl text-offwhite">
-                Trash<span className="text-lime">Pay</span>
-              </span>
+            <div className="mb-4">
+              <Image
+                src="/logo.png"
+                alt="TrashPay"
+                width={130}
+                height={44}
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <p className="font-body text-sm text-offwhite/40 leading-relaxed max-w-xs mb-6">
               Turning waste into value. Connecting households, packers, and
