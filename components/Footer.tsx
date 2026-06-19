@@ -47,7 +47,7 @@ export default function Footer() {
                 alt="TrashPay"
                 width={130}
                 height={44}
-                className="h-10 w-auto object-contain"
+                className="h-5 w-auto object-contain"
               />
             </div>
             <p className="font-body text-sm text-offwhite/40 leading-relaxed max-w-xs mb-6">

@@ -32,7 +32,7 @@ export default function Navbar() {
             alt="TrashPay"
             width={120}
             height={40}
-            className="h-9 w-auto object-contain"
+            className="h-5 w-auto object-contain"
             priority
           />
         </a>
